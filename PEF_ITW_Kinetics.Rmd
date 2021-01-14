@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(ggplot2)
 library(readxl)
+library(wesanderson)
 
 DATOS_PEF_NIÑOS <- read_excel("/Volumes/ALFONSOONCE/ODIN_EXTRACTION/DATOS_PEF_NIÑOS.xlsx",
                               sheet = "PEF (NIÑOS)", range = "A1:E35")
@@ -67,10 +68,16 @@ data[] <- lapply(data, as.character)
 
 
 e <- ggplot(data, aes(x = V1, y = as.integer(V2)))
-e + geom_bar(stat ="identity") +
-  labs(x= "Sex", y="Count", title="PEF sex distribution") +
+e + geom_bar(aes(fill=V1), stat ="identity") +
+  labs(x= "Sex", y="Count", title="PEF sex distribution", fill="Sex Group\n") +
   geom_text(aes(label=V2), vjust= -0.2, size=5) +
-  ylim(0, max(as.integer(data$V2))*1.1)
+  ylim(0, max(as.integer(data$V2))*1.1) +
+  theme_classic() +
+  scale_fill_manual(values=wes_palette(n=3, name="GrandBudapest1")) +
+  theme(plot.title = element_text(face= "bold", colour="black", size= 15, hjust = 0.5),
+        axis.title.x = element_text(face="bold", colour="black", size = 12),
+        axis.title.y = element_text(face="bold", colour="black", size = 12),
+        legend.title = element_text(face="bold.italic", colour="black", size=10))
   
 
 ```
@@ -90,10 +97,17 @@ data2[] <- lapply(data2, as.character)
 
 
 e <- ggplot(data2, aes(x = V1, y = as.integer(V2)))
-e + geom_bar(stat ="identity") +
-  labs(x= "Sex", y="Count", title="ITW sex distribution") +
+e + geom_bar(aes(fill=V1), stat ="identity") +
+  labs(x= "Sex", y="Count", title="ITW sex distribution", fill="Sex Group\n") +
   geom_text(aes(label=V2), vjust= -0.2, size=5) +
-  ylim(0, max(as.integer(data2$V2))*1.1)
+  ylim(0, max(as.integer(data2$V2))*1.1) +
+  theme_classic() +
+  scale_fill_manual(values=wes_palette(n=3, name="GrandBudapest1")) +
+  theme(plot.title = element_text(face= "bold", colour="black", size= 15, hjust = 0.5),
+        axis.title.x = element_text(face="bold", colour="black", size = 12),
+        axis.title.y = element_text(face="bold", colour="black", size = 12),
+        legend.title = element_text(face="bold.italic", colour="black", size=10))
+  
 
   
 ```
@@ -110,8 +124,16 @@ for (i in min(v_age):max(v_age)){
 }
 
 data_age_pef <- cbind(v_age, count)
-ggplot(data.frame(data_age_pef),aes(x=as.factor(v_age), y=count)) + geom_bar(stat="identity") +
-  labs(x="Age", y="Count", title="PEF age distribution")
+ggplot(data.frame(data_age_pef),aes(x=as.factor(v_age), y=count)) +
+  geom_bar(aes(fill=count), stat="identity") +
+  scale_fill_gradientn(colours = colorspace::diverge_hcl(7)) +
+  labs(x="Age", y="Count", title="PEF age distribution", fill ="No. of patients\n") +
+  theme_classic() + 
+  theme(plot.title = element_text(face= "bold", colour="black", size= 15, hjust = 0.5),
+        axis.title.x = element_text(face="bold", colour="black", size = 12),
+        axis.title.y = element_text(face="bold", colour="black", size = 12),
+        legend.title = element_text(face="bold.italic", colour="black", size=10))
+  
   
 ```
 
@@ -127,8 +149,16 @@ for (i in min(v_age):max(v_age)){
 }
 
 data_age_itw <- cbind(v_age, count)
-ggplot(data.frame(data_age_itw),aes(x=as.factor(v_age), y=count)) + geom_bar(stat="identity")+
-  labs(x="Age", y="Count", title="ITW age distribution")
+ggplot(data.frame(data_age_itw),aes(x=as.factor(v_age), y=count)) +
+  geom_bar(aes(fill=count), stat="identity") +
+  scale_fill_gradientn(colours = colorspace::diverge_hcl(7)) +
+  labs(x="Age", y="Count", title="ITW age distribution", fill="No. of patients\n") +
+  theme_classic() + 
+  theme(plot.title = element_text(face= "bold", colour="black", size= 15, hjust = 0.5),
+        axis.title.x = element_text(face="bold", colour="black", size = 12),
+        axis.title.y = element_text(face="bold", colour="black", size = 12),
+        legend.title = element_text(face="bold.italic", colour="black", size=10))
+  
   
 ```
 
@@ -151,12 +181,13 @@ for (i in min(v_age_pef):max(v_age_pef)){
 e <- as.data.frame(cbind(v_age_pef, sex, count_age_pef))
 e[] <- lapply(e, as.character)
 
-facet_plot <- ggplot(e, aes(x = as.integer(v_age_pef), y = as.integer(count_age_pef))) +
-  geom_bar(stat = "identity", position = "dodge") +
-  labs(x = "\n Age", y = "Count \n",
-       title = "PEF age distribution by sex \n") +
+facet_plot <- ggplot(e, aes(x = as.numeric(v_age_pef), y = as.integer(count_age_pef))) +
+  geom_bar(aes(fill=count_age_pef), stat = "identity", position = "dodge") +
+  labs(x = "\n Age", y = "Count \n", title = "PEF age distribution by sex \n", fill= "No. of patients\n") +
   facet_grid(. ~ as.factor(e$sex)) +
-  theme(plot.title = element_text(hjust = 0.5), 
+  scale_fill_gradientn(colours = colorspace::diverge_hcl(7)) +
+  theme_classic() +
+  theme(plot.title = element_text(face= "bold", colour="black", size= 15, hjust = 0.5), 
         axis.title.x = element_text(face="bold", colour="blue", size = 12),
         axis.title.y = element_text(face="bold", colour="blue", size = 12),
         strip.background = element_rect(fill="lightgreen", colour="black", size=1),
@@ -187,8 +218,17 @@ e[] <- lapply(e, as.character)
 
 
 plot_2 <- ggplot(e, aes(fill=sex, y=as.integer(count_age_pef), x=as.integer(v_age_pef))) + 
-  geom_bar(position="dodge", stat="identity") +
-  labs(x= "\n Age", y= "Count \n", title ="PEF age distribution by gender \n")
+  geom_bar(aes(fill=sex), position="dodge", stat="identity") +
+  labs(x= "\n Age", y= "Count \n", title ="PEF age distribution by gender \n", fill= "Sex Group\n") +
+  # scale_fill_gradientn(colours = colorspace::diverge_hcl(7)) +
+  theme_classic() +
+  theme(plot.title = element_text(face= "bold", colour="black", size= 15, hjust = 0.5), 
+        axis.title.x = element_text(face="bold", colour="black", size = 12),
+        axis.title.y = element_text(face="bold", colour="black", size = 12),
+        legend.title = element_text(face="bold.italic", colour="black", size=10),
+        strip.background = element_rect(fill="lightgreen", colour="black", size=1),
+        strip.text = element_text(face="bold", size=rel(1.2)))
+  
 plot_2
   
 ```
