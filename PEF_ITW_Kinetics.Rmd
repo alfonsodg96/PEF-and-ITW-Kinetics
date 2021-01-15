@@ -223,7 +223,7 @@ x_axis_labels <- min(as.integer(e$v_age_pef)):max(as.integer(e$v_age_pef))
 
 plot_2 <- ggplot(e, aes(fill=sex, y=as.integer(count_age_pef), x=as.integer(v_age_pef))) + 
   geom_bar(aes(fill=sex), position="dodge", stat="identity") +
-  labs(x= "\n Age", y= "Count \n", title ="PEF age distribution by gender \n", fill= "Sex Group\n") +
+  labs(x= "\n Age", y= "Count \n", title ="PEF age distribution by sex \n", fill= "Sex Group\n") +
   # scale_fill_gradientn(colours = colorspace::diverge_hcl(7)) +
   scale_fill_manual(values=wes_palette(n=3, name="GrandBudapest1")) +
   theme_classic() +
@@ -301,7 +301,7 @@ x_axis_labels <- min(as.integer(e$v_age_itw)):max(as.integer(e$v_age_itw))
 
 plot_2 <- ggplot(e, aes(fill=sex, y=as.integer(count_age_itw), x=as.integer(v_age_itw))) + 
   geom_bar(aes(fill=sex), position="dodge", stat="identity") +
-  labs(x= "\n Age", y= "Count \n", title ="ITW age distribution by gender \n", fill= "Sex Group\n") +
+  labs(x= "\n Age", y= "Count \n", title ="ITW age distribution by sex \n", fill= "Sex Group\n") +
   # scale_fill_gradientn(colours = colorspace::diverge_hcl(7)) +
   scale_fill_manual(values=wes_palette(n=3, name="GrandBudapest1")) +
   theme_classic() +
