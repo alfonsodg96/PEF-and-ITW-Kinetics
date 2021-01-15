@@ -126,7 +126,7 @@ for (i in min(v_age):max(v_age)){
 data_age_pef <- cbind(v_age, count)
 ggplot(data.frame(data_age_pef),aes(x=as.factor(v_age), y=count)) +
   geom_bar(aes(fill=count), stat="identity") +
-  scale_fill_gradientn(colours = colorspace::diverge_hcl(7)) +
+  scale_fill_gradient2(low="blue", high="red") +
   labs(x="Age", y="Count", title="PEF age distribution", fill ="No. of patients\n") +
   theme_classic() + 
   theme(plot.title = element_text(face= "bold", colour="black", size= 15, hjust = 0.5),
@@ -151,7 +151,7 @@ for (i in min(v_age):max(v_age)){
 data_age_itw <- cbind(v_age, count)
 ggplot(data.frame(data_age_itw),aes(x=as.factor(v_age), y=count)) +
   geom_bar(aes(fill=count), stat="identity") +
-  scale_fill_gradientn(colours = colorspace::diverge_hcl(7)) +
+  scale_fill_gradient2(low="blue", high="red") +
   labs(x="Age", y="Count", title="ITW age distribution", fill="No. of patients\n") +
   theme_classic() + 
   theme(plot.title = element_text(face= "bold", colour="black", size= 15, hjust = 0.5),
@@ -180,17 +180,21 @@ for (i in min(v_age_pef):max(v_age_pef)){
 
 e <- as.data.frame(cbind(v_age_pef, sex, count_age_pef))
 e[] <- lapply(e, as.character)
+x_axis_labels <- min(as.integer(e$v_age_pef)):max(as.integer(e$v_age_pef))
 
 facet_plot <- ggplot(e, aes(x = as.numeric(v_age_pef), y = as.integer(count_age_pef))) +
-  geom_bar(aes(fill=count_age_pef), stat = "identity", position = "dodge") +
+  geom_bar(aes(fill=as.integer(count_age_pef)), stat = "identity", position = "dodge") +
   labs(x = "\n Age", y = "Count \n", title = "PEF age distribution by sex \n", fill= "No. of patients\n") +
   facet_grid(. ~ as.factor(e$sex)) +
+  # scale_fill_gradient2(low="blue", high="red") +
   scale_fill_gradientn(colours = colorspace::diverge_hcl(7)) +
   theme_classic() +
+  scale_x_continuous(labels = x_axis_labels, breaks = x_axis_labels) +
   theme(plot.title = element_text(face= "bold", colour="black", size= 15, hjust = 0.5), 
-        axis.title.x = element_text(face="bold", colour="blue", size = 12),
-        axis.title.y = element_text(face="bold", colour="blue", size = 12),
-        strip.background = element_rect(fill="lightgreen", colour="black", size=1),
+        axis.title.x = element_text(face="bold", colour="black", size = 12),
+        axis.title.y = element_text(face="bold", colour="black", size = 12),
+        legend.title = element_text(face="bold.italic", colour="black", size=10),
+        strip.background = element_rect(fill="cyan", colour="black", size=1),
         strip.text = element_text(face="bold", size=rel(1.2)))
 
 facet_plot  
@@ -215,19 +219,19 @@ for (i in min(v_age_pef):max(v_age_pef)){
 
 e <- as.data.frame(cbind(v_age_pef, sex, count_age_pef))
 e[] <- lapply(e, as.character)
-
+x_axis_labels <- min(as.integer(e$v_age_pef)):max(as.integer(e$v_age_pef))
 
 plot_2 <- ggplot(e, aes(fill=sex, y=as.integer(count_age_pef), x=as.integer(v_age_pef))) + 
   geom_bar(aes(fill=sex), position="dodge", stat="identity") +
   labs(x= "\n Age", y= "Count \n", title ="PEF age distribution by gender \n", fill= "Sex Group\n") +
   # scale_fill_gradientn(colours = colorspace::diverge_hcl(7)) +
+  scale_fill_manual(values=wes_palette(n=3, name="GrandBudapest1")) +
   theme_classic() +
+  scale_x_continuous(labels = x_axis_labels, breaks = x_axis_labels) +
   theme(plot.title = element_text(face= "bold", colour="black", size= 15, hjust = 0.5), 
         axis.title.x = element_text(face="bold", colour="black", size = 12),
         axis.title.y = element_text(face="bold", colour="black", size = 12),
-        legend.title = element_text(face="bold.italic", colour="black", size=10),
-        strip.background = element_rect(fill="lightgreen", colour="black", size=1),
-        strip.text = element_text(face="bold", size=rel(1.2)))
+        legend.title = element_text(face="bold.italic", colour="black", size=10))
   
 plot_2
   
@@ -235,3 +239,78 @@ plot_2
 
 
 
+### **Nº1 Age distribution of ITW patients by sex using a barchart**  
+
+```{r echo=FALSE}
+age_sex_itw <- datos_itw[,c(2,3)]
+v_age_itw <- rep(seq(1:max(age_itw)),each=2)
+count_age_itw <- vector(mode="integer", length=length(v_age_itw))
+sex <- rep(c("M","F"), length.out=length(v_age_itw))
+j=1
+
+for (i in min(v_age_itw):max(v_age_itw)){
+  count_age_itw[j] <- length(which(age_sex_itw$EDAD == i & age_sex_itw$SEXO == "M"))
+  count_age_itw[j+1] <- length(which(age_sex_itw$EDAD == i & age_sex_itw$SEXO == "F"))
+  j=j+2
+}
+
+e <- as.data.frame(cbind(v_age_itw, sex, count_age_itw))
+e[] <- lapply(e, as.character)
+x_axis_labels <- min(as.integer(e$v_age_itw)):max(as.integer(e$v_age_itw))
+
+facet_plot <- ggplot(e, aes(x = as.numeric(v_age_itw), y = as.integer(count_age_itw))) +
+  geom_bar(aes(fill=as.integer(count_age_itw)), stat = "identity", position = "dodge") +
+  labs(x = "\n Age", y = "Count \n", title = "ITW age distribution by sex \n", fill= "No. of patients\n") +
+  facet_grid(. ~ as.factor(e$sex)) +
+  scale_fill_gradientn(colours = colorspace::diverge_hcl(7)) +
+  # scale_fill_manual(breaks=c("4","3","2","1","0"), values=wes_palette(n=5, name="Zissou1")) +
+  theme_classic() +
+  scale_x_continuous(labels = x_axis_labels, breaks = x_axis_labels) +
+  theme(plot.title = element_text(face= "bold", colour="black", size= 15, hjust = 0.5), 
+        axis.title.x = element_text(face="bold", colour="black", size = 12),
+        axis.title.y = element_text(face="bold", colour="black", size = 12),
+        legend.title = element_text(face="bold.italic", colour="black", size=10),
+        strip.background = element_rect(fill="cyan", colour="black", size=1),
+        strip.text = element_text(face="bold", size=rel(1.2)))
+
+facet_plot  
+  
+```
+
+
+
+
+### **Nº2 Age distribution of PEF patients by sex using a barchart**  
+
+```{r echo=FALSE}
+age_sex_itw <- datos_itw[,c(2,3)]
+v_age_itw <- rep(seq(1:max(age_itw)),each=2)
+count_age_itw <- vector(mode="integer", length=length(v_age_itw))
+sex <- rep(c("M","F"), length.out=length(v_age_itw))
+j=1
+
+for (i in min(v_age_itw):max(v_age_itw)){
+  count_age_itw[j] <- length(which(age_sex_itw$EDAD == i & age_sex_itw$SEXO == "M"))
+  count_age_itw[j+1] <- length(which(age_sex_itw$EDAD == i & age_sex_itw$SEXO == "F"))
+  j=j+2
+}
+
+e <- as.data.frame(cbind(v_age_itw, sex, count_age_itw))
+e[] <- lapply(e, as.character)
+x_axis_labels <- min(as.integer(e$v_age_itw)):max(as.integer(e$v_age_itw))
+
+plot_2 <- ggplot(e, aes(fill=sex, y=as.integer(count_age_itw), x=as.integer(v_age_itw))) + 
+  geom_bar(aes(fill=sex), position="dodge", stat="identity") +
+  labs(x= "\n Age", y= "Count \n", title ="ITW age distribution by gender \n", fill= "Sex Group\n") +
+  # scale_fill_gradientn(colours = colorspace::diverge_hcl(7)) +
+  scale_fill_manual(values=wes_palette(n=3, name="GrandBudapest1")) +
+  theme_classic() +
+  scale_x_continuous(labels = x_axis_labels, breaks = x_axis_labels) +
+  theme(plot.title = element_text(face= "bold", colour="black", size= 15, hjust = 0.5), 
+        axis.title.x = element_text(face="bold", colour="black", size = 12),
+        axis.title.y = element_text(face="bold", colour="black", size = 12),
+        legend.title = element_text(face="bold.italic", colour="black", size=10))
+  
+plot_2
+  
+```
